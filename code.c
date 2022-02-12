@@ -20,5 +20,5 @@ int main(){
 		pthread_join(tid[j],NULL);
 	}
 	pthread_exit(NULL);
-	return(0);
+	return 0;
 }
