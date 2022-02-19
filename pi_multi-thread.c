@@ -3,10 +3,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <semaphore.h>
+
 
 #define NUM_THREAD 3
 static long int count_circle = 0;
-
+sem_t sem;
 double random_double()
 {
 	return random() / ((double)RAND_MAX);
@@ -22,7 +24,11 @@ void* point_thread(void *point_per_thread)
 		double x = random_double() * 2.0 - 1.0;
 		double y = random_double() * 2.0 - 1.0;
 		double r = x*x + y*y;
-		if(r <= 1) ++HitCount;
+		if(r <= 1) {
+			sem_wait(&sem);
+			++HitCount;
+			sem_post(&sem);
+		}
 	}
 	count_circle += HitCount;
 	pthread_exit(0);
@@ -34,7 +40,7 @@ int main(int argc, char** argv)
 	pthread_t tid[NUM_THREAD];
 	clock_t start_time, end_time;
 	int total_point_per_thread = atoll(argv[1])/NUM_THREAD;
-
+	sem_init(&sem, 0, 1);
 	srandom((unsigned)time(NULL));
 	start_time = clock();
 	static int i;
@@ -50,6 +56,7 @@ int main(int argc, char** argv)
 	double pi = 4.0 * (double)count_circle/			   				(double)total_point_per_thread/(double)NUM_THREAD;
 	//pthread_exit(0);
 	end_time = clock();
+	sem_destroy(&sem);
 	printf("PI = %17.15f\n",pi);
 	printf("time to compute = %g second\n",(double)(end_time - 						start_time)/CLOCKS_PER_SEC);
 	return 0;

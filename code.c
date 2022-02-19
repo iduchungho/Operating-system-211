@@ -14,11 +14,12 @@ int main(){
 	long i;
 	for(i = 0; i < NUM_THREAD; i++){
 		pthread_create(&tid[i], NULL, hello, (void*)i);
-		sleep(1);
+		//sleep(1);
+		pthread_join(tid[i],NULL);
 	}
-	for(long j = 0 ; j < NUM_THREAD; j++){
-		pthread_join(tid[j],NULL);
-	}
+	//for(long j = 0 ; j < NUM_THREAD; j++){
+	//	pthread_join(tid[j],NULL);
+	//}
 	pthread_exit(NULL);
 	return 0;
 }
