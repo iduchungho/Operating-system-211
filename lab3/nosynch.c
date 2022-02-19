@@ -4,6 +4,7 @@
 #include <semaphore.h>
 
 int main(){
+	int a = 0;
 	printf("halo world");
 	return 0;
 }
