@@ -8,7 +8,7 @@
 
 #define NUM_THREAD 3
 static long int count_circle = 0;
-sem_t sem;//
+sem_t sem;
 double random_double()
 {
 	return random() / ((double)RAND_MAX);
