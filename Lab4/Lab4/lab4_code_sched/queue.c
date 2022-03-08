@@ -13,7 +13,6 @@ void initialize_queue(struct pqueue_t * q) {
 int empty(struct pqueue_t * q) {
 	return (q->head == NULL);
 }
-
 /* Get PCB of a process from the queue (q).
  * Return NULL if the queue is empty */
 struct pcb_t * de_queue(struct pqueue_t * q) {
@@ -23,6 +22,14 @@ struct pcb_t * de_queue(struct pqueue_t * q) {
 	// condition
 	
 	// YOUR CODE HERE
+	
+	if(empty(q))
+		return NULL;
+	pthread_mutex_lock(&q->lock);
+	proc = &q->head;
+	q->head = q->head->next;
+	pthread_mutex_unlock(&q->lock);
+
 
 	return proc;
 }
@@ -33,6 +40,26 @@ void en_queue(struct pqueue_t * q, struct pcb_t * proc) {
 	// Remember to use 'lock' to avoid race condition
 	
 	// YOUR CODE HERE
+
+	struct qitem_t * pnew =
+	       	(struct qitem_t *)malloc((sizeof(struct qitem_t)));
+
+	if(empty(q))
+	{
+
+		pthead_mutex_lock(&q->lock);
+		q->head = pnew;
+		q->tail = pnew;
+		pthread_mutex_unlock(&q->lock);
+	}
+	else
+	{
+	
+		pthead_mutex_lock(&q->lock);
+		p->tail->next = pnew;
+		p->tail = p->tail->next;
+		pthread_mutex_unlock(&q->lock);
+	}
 	
 }
 
