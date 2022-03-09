@@ -41,13 +41,15 @@ void * cpu(void * arg) {
 			// TODO: Calculate exec_time from process's PCB
 			
 			// YOUR CODE HERE
-			if(timeslot <= proc->burst_time)
+			if(timeslot < proc->burst_time)
 			{
 				exec_time = timeslot;
+				proc->burst_time -= timeslot;
 			}
 			else
 			{
 				exec_time = proc->burst_time;
+				proc->burst_time = 0;
 			}
 			
 			/* Emulate the execution of the process by using
@@ -62,7 +64,6 @@ void * cpu(void * arg) {
 			// put its PCB back to the queue.
 			
 			// YOUR CODE HERE
-			proc->burst_time -= exec_time;
 			if(proc->burst_time == 0)
 			{
 				free(proc);
