@@ -46,8 +46,9 @@ void en_queue(struct pqueue_t * q, struct pcb_t * proc) {
 
 	if(empty(q))
 	{
-
 		pthead_mutex_lock(&q->lock);
+		pnew->data = proc;
+		pnew->next = NULL;
 		q->head = pnew;
 		q->tail = pnew;
 		pthread_mutex_unlock(&q->lock);
@@ -56,6 +57,8 @@ void en_queue(struct pqueue_t * q, struct pcb_t * proc) {
 	{
 	
 		pthead_mutex_lock(&q->lock);
+		pnew->data = proc;
+		pnew->next = NULL;
 		p->tail->next = pnew;
 		p->tail = p->tail->next;
 		pthread_mutex_unlock(&q->lock);
