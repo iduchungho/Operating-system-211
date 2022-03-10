@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include "queue.h"
 #include <pthread.h>
@@ -13,6 +12,7 @@ void initialize_queue(struct pqueue_t * q) {
 int empty(struct pqueue_t * q) {
 	return (q->head == NULL);
 }
+
 /* Get PCB of a process from the queue (q).
  * Return NULL if the queue is empty */
 struct pcb_t * de_queue(struct pqueue_t * q) {
@@ -20,14 +20,22 @@ struct pcb_t * de_queue(struct pqueue_t * q) {
 	// TODO: return q->head->data and remember to update the queue's head
 	// and tail if necessary. Remember to use 'lock' to avoid race
 	// condition
-	
 	// YOUR CODE HERE
-	if(q->head)
-	{
-		pthread_mutex_lock(&q->lock);
-		proc = q->head->data;
-		q->head = q->head->next;
-		pthread_mutex_unlock(&q->lock);
+	if(q->head == NULL) return NULL;
+	else {
+		if(q->head == q->tail) {
+			proc = q->head->data;
+			pthread_mutex_lock(&q->lock);
+			q->head = NULL;
+			q->tail = NULL;
+			pthread_mutex_unlock(&q->lock);
+		}
+		else {
+			proc = q->head->data;
+			pthread_mutex_lock(&q->lock);
+			q->head = q->head->next;
+			pthread_mutex_unlock(&q->lock);
+		}
 	}
 	return proc;
 }
@@ -36,28 +44,20 @@ struct pcb_t * de_queue(struct pqueue_t * q) {
 void en_queue(struct pqueue_t * q, struct pcb_t * proc) {
 	// TODO: Update q->tail.
 	// Remember to use 'lock' to avoid race condition
-	
 	// YOUR CODE HERE
-
-	struct qitem_t * pnew =
-	       	(struct qitem_t *)malloc((sizeof(struct qitem_t)));
-	       	
-	pnew->data = proc;
-	pnew->next = NULL;
-	if(!q->head)
-	{
+	struct qitem_t * item = (struct qitem_t *)malloc(sizeof(struct qitem_t));
+	item->data = proc;
+	item->next = NULL;
+	if(q->head == NULL) {
 		pthread_mutex_lock(&q->lock);
-		q->head = pnew;
-		q->tail = pnew;
+		q->head = item;
+		q->tail = item;
 		pthread_mutex_unlock(&q->lock);
 	}
-	else
-	{
+	else {
 		pthread_mutex_lock(&q->lock);
-		q->tail->next = pnew;
-		q->tail = pnew;
+		q->tail->next = item;
+		q->tail = item;
 		pthread_mutex_unlock(&q->lock);
 	}
 }
-
-
