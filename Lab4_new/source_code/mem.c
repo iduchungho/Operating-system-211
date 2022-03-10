@@ -73,11 +73,11 @@ void * mem_alloc(unsigned int size) {
 	// Follow is FIST FIT allocator used for demonstration only.
 	// You need to implment your own BEST FIT allocator.
 	// TODO: Comment the next line
-	void * pointer = first_fit_allocator(size);
+	//void * pointer = first_fit_allocator(size);
 	// Commnent out the previous line and uncomment to next line
 	// to invoke best fit allocator
 	// TODO: uncomment the next line
-	//void * pointer = best_fit_allocator(size);
+	void * pointer = best_fit_allocator(size);
 	
 	// FOR VERIFICATION ONLY. DO NOT REMOVE THESE LINES
 	if (pointer != NULL) {
