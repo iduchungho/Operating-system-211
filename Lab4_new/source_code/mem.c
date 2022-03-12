@@ -249,7 +249,7 @@ void * best_fit_allocator(unsigned int size) {
 	}
 }
 
-void * worst_fit_allocate(unsigned int size)
+void * worst_fit_allocator(unsigned int size)
 {
 	int found = 0;
 	struct mem_region *current_region = free_regions;
@@ -266,7 +266,7 @@ void * worst_fit_allocate(unsigned int size)
 			}
 			else
 			{
-				if(worst_fit_region->size =< current_region->size)
+				if(worst_fit_region->size < current_region->size)
 				{
 					worst_fit_region = current_region; // Find the largest block of memory to load the process
 					found = 1; // found
