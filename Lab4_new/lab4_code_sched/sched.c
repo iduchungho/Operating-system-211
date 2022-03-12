@@ -70,9 +70,7 @@ void * cpu(void * arg) {
 			}
 			else
 			{
-				//pthread_mutex_lock(&ready_queue.lock);
 				en_queue(&ready_queue, proc);
-				//pthread_mutex_unlock(&ready_queue.lock);
 			}
 			
 			/* Track runtime status */
