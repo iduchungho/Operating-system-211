@@ -185,7 +185,134 @@ void mem_free(void * pointer) {
 
 void * best_fit_allocator(unsigned int size) {
 	// TODO: Implement your best fit allocator here
-	return NULL; // remember to remove this line 
+	int found = 0;
+	struct mem_region * current_region = free_regions;
+	struct mem_region * best_fit_region = NULL;
+
+	while(current_region)
+	{
+		if(current_region->size >= size)
+		{
+			if(!best_fit_region)
+			{
+				best_fit_region = current_region;
+				found = 1; // found
+			}
+			else
+			{
+				if(current_region->size < best_fit_region->size)
+				{
+					best_fit_region = current_region; //Find the smallest block of memory to load the process
+					found = 1; // found
+				}
+			}
+		}
+		current_region = current_region->next;
+	}
+	current_region = best_fit_region;
+	
+	if (found) {
+		struct mem_region* tmp =
+			(struct mem_region*)malloc(sizeof(struct mem_region));
+		tmp->pointer = current_region->pointer;
+		tmp->size = size;
+		tmp->next = used_regions;
+		tmp->prev = NULL;
+		if (used_regions == NULL) {
+			used_regions = tmp;
+		}else{
+			used_regions->prev = tmp;
+			used_regions = tmp;
+		}
+		if (current_region->size == size) {
+			if (current_region == free_regions) {
+				free_regions = free_regions->next;
+				if (free_regions != NULL) {
+					free_regions->prev = NULL;
+				}
+			}else{
+				if (current_region->prev != NULL) {
+					current_region->prev->next = current_region->next;
+				}
+				if (current_region->next != NULL) {
+					current_region->next->prev = current_region->prev;
+				}
+			}
+			free(current_region);
+		}else{
+			current_region->pointer += size;
+			current_region->size -= size;
+		}
+		return tmp->pointer;
+	}else{
+		return NULL;
+	}
+}
+
+void * worst_fit_allocate(unsigned int size)
+{
+	int found = 0;
+	struct mem_region *current_region = free_regions;
+	struct mem_region *worst_fit_region = NULL;
+	
+	while (current_region)
+	{
+		if(current_region->size >= size)
+		{
+			if(!worst_fit_region)
+			{
+				worst_fit_region = current_region;
+				found = 1; // found
+			}
+			else
+			{
+				if(worst_fit_region->size =< current_region->size)
+				{
+					worst_fit_region = current_region; // Find the largest block of memory to load the process
+					found = 1; // found
+				}
+			}
+		}
+		current_region = current_region->next;
+	}
+	current_region = worst_fit_region;
+
+	if (found) {
+		struct mem_region* tmp =
+			(struct mem_region*)malloc(sizeof(struct mem_region));
+		tmp->pointer = current_region->pointer;
+		tmp->size = size;
+		tmp->next = used_regions;
+		tmp->prev = NULL;
+		if (used_regions == NULL) {
+			used_regions = tmp;
+		}else{
+			used_regions->prev = tmp;
+			used_regions = tmp;
+		}
+		if (current_region->size == size) {
+			if (current_region == free_regions) {
+				free_regions = free_regions->next;
+				if (free_regions != NULL) {
+					free_regions->prev = NULL;
+				}
+			}else{
+				if (current_region->prev != NULL) {
+					current_region->prev->next = current_region->next;
+				}
+				if (current_region->next != NULL) {
+					current_region->next->prev = current_region->prev;
+				}
+			}
+			free(current_region);
+		}else{
+			current_region->pointer += size;
+			current_region->size -= size;
+		}
+		return tmp->pointer;
+	}else{
+		return NULL;
+	}
 }
 
 void * first_fit_allocator(unsigned int size) {
