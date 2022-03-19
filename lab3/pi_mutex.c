@@ -36,9 +36,11 @@ void* point_thread(void *point_per_thread)
 int main(int argc, char** argv)
 {
 	pthread_t tid[NUM_THREAD];
+	clock_t start_time, end_time;
 	int total_point_per_thread = atoll(argv[1])/NUM_THREAD;
 	pthread_mutex_init(&lock, NULL);
 	srandom((unsigned)time(NULL));
+	start_time = clock();
 	static int i;
 	for(i = 0; i < NUM_THREAD ; i++){
 		pthread_create(&tid[i], NULL, point_thread,
@@ -50,7 +52,9 @@ int main(int argc, char** argv)
 	}
 
 	double pi = 4.0 * (double)count_circle/(double)total_point_per_thread/(double)NUM_THREAD;
+	end_time = clock();
 	pthread_mutex_destroy(&lock);
 	printf("PI = %17.15f\n",pi);
+	printf("time to compute = %g second\n",(double)(end_time - start_time)/CLOCKS_PER_SEC);
 	return 0;
 }
