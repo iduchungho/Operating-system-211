@@ -11,3 +11,11 @@ run:
 clean:
 	rm -f *.o pi_serial
 	rm -f *.o pi_multi-thread
+code: code.o
+	gcc -o code code.o -lpthread
+code.o: code.c
+	gcc -c code.c -lpthread
+rcode:
+	./code
+cls:
+	rm -f *.o code
