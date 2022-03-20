@@ -1,0 +1,8 @@
+mkdir 2013381
+cd 2013381
+vim example.txt
+ls
+cat example.txt
+head -5 example.txt
+tail -5 example.txt
+history
